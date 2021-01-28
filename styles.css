@@ -1,0 +1,32 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 400;
+}
+html {
+    height: 100%;
+}
+body {
+    display: grid;
+    height: 100%;
+    margin: 0;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background: linear-gradient(30deg, #000, #fff);
+}
+#board {
+    position: relative;
+    display: block;
+    margin: auto;
+    width: 400px;
+    height: 400px;
+    background-color: red;
+}
+#head {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    background-color: green;
+}
