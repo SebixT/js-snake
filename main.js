@@ -3,7 +3,7 @@ class Snake {
         this.head             = head;
         this.board            = board;
         this.headSize         = this.head.offsetWidth;
-        this.speed            = 200;
+        this.speed            = 100;
         this.prevDirection    = undefined;
         this.currentDirection = undefined;
         this.newGame();
@@ -15,6 +15,8 @@ class Snake {
         this.currentDirection = undefined;
         this.headX            = window.getComputedStyle(this.head).left;
         this.headY            = window.getComputedStyle(this.head).top;
+        if(this.food) this.board.removeChild(this.food);
+        this.createFood(this.headSize);
     }
     setPrevDirection(dir) {
         /* 
@@ -48,60 +50,52 @@ class Snake {
                         ||(this.getPrevDirection() == 'ArrowLeft')
                         ) {
                             return '';
-                        }else {
-                            this.currentDirection = dir;
-                            this.setPrevDirection(this.getCurrentDirection());
-                            return '';
-                        }
+                    }else {
+                        this.currentDirection = dir;
+                        this.setPrevDirection(this.getCurrentDirection());
+                        return '';
+                    }
                     break;
                 case 'ArrowLeft':
                     if(   (this.getPrevDirection() == 'ArrowRight')
                         ||(this.getPrevDirection() == 'ArrowLeft')
                         ) {
                             return '';
-                        }else {
-                            this.currentDirection = dir;
-                            this.setPrevDirection(this.getCurrentDirection());
-                            return '';
-                        }
+                    }else {
+                        this.currentDirection = dir;
+                        this.setPrevDirection(this.getCurrentDirection());
+                        return '';
+                    }
                     break;
                 case 'ArrowUp':
                     if(   (this.getPrevDirection() == 'ArrowUp')
                         ||(this.getPrevDirection() == 'ArrowDown')
                         ) {
                             return '';
-                        }else {
-                            this.currentDirection = dir;
-                            this.setPrevDirection(this.getCurrentDirection());
-                            return '';
-                        }
+                    }else {
+                        this.currentDirection = dir;
+                        this.setPrevDirection(this.getCurrentDirection());
+                        return '';
+                    }
                     break;
                 case 'ArrowDown':
                     if(   (this.getPrevDirection() == 'ArrowUp')
                         ||(this.getPrevDirection() == 'ArrowDown')
                         ) {
                             return '';
-                        }else {
-                            this.currentDirection = dir;
-                            this.setPrevDirection(this.getCurrentDirection());
-                            return '';
-                        }
+                    }else {
+                        this.currentDirection = dir;
+                        this.setPrevDirection(this.getCurrentDirection());
+                        return '';
+                    }
                     break;
                 default:
                     break;
             }
         }
     }
-    getCurrentDirection() {
-        return this.currentDirection;
-    }
-    setSpeed(value) {
-        return this.speed = value;
-    }
-    getSpeed() {
-        return this.speed;
-    }
     move() {
+        // console.log(this.foodX, this.foodY, parseInt(this.headX), parseInt(this.headY));
         switch(this.getCurrentDirection()) {
             case 'ArrowRight':
                 this.headX = parseInt(this.headX) + this.headSize + 'px';
@@ -120,7 +114,13 @@ class Snake {
         }
         this.head.style.left = this.headX;
         this.head.style.top  = this.headY;
-        
+        if(   (this.foodX == parseInt(this.headX))
+            &&(this.foodY == parseInt(this.headY))
+            ) {
+                this.board.removeChild(this.food);
+                this.addBody(this.headSize);
+                this.createFood(this.headSize);
+            }
         if(    (parseInt(this.headX) > 390) 
             || (parseInt(this.headX) < 0) 
             || (parseInt(this.headY) > 390) 
@@ -129,11 +129,34 @@ class Snake {
             this.newGame();
         }
     }
-    addBody() {
+    getCurrentDirection() {
+        return this.currentDirection;
+    }
+    setSpeed(value) {
+        return this.speed = value;
+    }
+    getSpeed() {
+        return this.speed;
+    }
+    addBody(size) {
+        let bodySize = size;
 
     }
-    createFood() {
-
+    createFood(size) {
+        this.food = document.createElement('div');
+        let x = parseInt(Math.random()*400);
+        let y = parseInt(Math.random()*400);
+        x = x - x % this.headSize;
+        y = y - y % this.headSize;
+        this.food.style.position   = "absolute";
+        this.food.style.top        = y + "px";
+        this.food.style.left       = x + "px";
+        this.food.style.width      = size + "px";
+        this.food.style.height     = size + "px";
+        this.food.style.background = "pink";
+        this.foodX = x;
+        this.foodY = y;
+        this.board.appendChild(this.food);
     }
     startGame() {
 
