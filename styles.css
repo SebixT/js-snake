@@ -22,7 +22,8 @@ body {
     height: 400px;
     background-color: red;
 }
-#head {
+#head, 
+.snake-body {
     position: absolute;
     top: 0;
     left: 0;

@@ -3,7 +3,7 @@ class Snake {
         this.head             = head;
         this.board            = board;
         this.headSize         = this.head.offsetWidth;
-        this.speed            = 100;
+        this.speed            = 90;
         this.prevDirection    = undefined;
         this.currentDirection = undefined;
         this.newGame();
@@ -15,28 +15,31 @@ class Snake {
         this.currentDirection = undefined;
         this.headX            = window.getComputedStyle(this.head).left;
         this.headY            = window.getComputedStyle(this.head).top;
+        this.getSnakeBody();
         if(this.food) this.board.removeChild(this.food);
+
+        if(this.getSnakeBody().length > 0) {
+            this.getSnakeBody().forEach((bodyPart, i) => {
+                this.board.removeChild(bodyPart);
+            });
+        }
+
         this.createFood(this.headSize);
     }
+
+    /* 
+    'ArrowRight' - right; 
+    'ArrowLeft' - left; 
+    'ArrowUp' - up; 
+    'ArrowDown' - down;
+    */
     setPrevDirection(dir) {
-        /* 
-        'ArrowRight' - right; 
-        'ArrowLeft' - left; 
-        'ArrowUp' - up; 
-        'ArrowDown' - down;
-        */
         this.prevDirection = dir;
     }
     getPrevDirection() {
         return this.prevDirection;
     }
     setCurrentDirection(dir) {
-        /* 
-        'ArrowRight' - right; 
-        'ArrowLeft' - left; 
-        'ArrowUp' - up; 
-        'ArrowDown' - down;
-        */
         if(this.getPrevDirection() == undefined) {
             this.setPrevDirection(dir);
             this.currentDirection = dir;
@@ -95,7 +98,10 @@ class Snake {
         }
     }
     move() {
-        // console.log(this.foodX, this.foodY, parseInt(this.headX), parseInt(this.headY));
+        
+        let currHeadX = this.headX;
+        let currHeadY = this.headY;
+
         switch(this.getCurrentDirection()) {
             case 'ArrowRight':
                 this.headX = parseInt(this.headX) + this.headSize + 'px';
@@ -114,19 +120,34 @@ class Snake {
         }
         this.head.style.left = this.headX;
         this.head.style.top  = this.headY;
-        if(   (this.foodX == parseInt(this.headX))
-            &&(this.foodY == parseInt(this.headY))
-            ) {
-                this.board.removeChild(this.food);
-                this.addBody(this.headSize);
-                this.createFood(this.headSize);
+
+        if(!((currHeadX == this.headX)&&(currHeadY == this.headY))){
+            
+            if(   (this.foodX == parseInt(this.headX))
+                &&(this.foodY == parseInt(this.headY))
+                ) {
+                    this.board.removeChild(this.food);
+                    this.addBody(this.headSize, currHeadX, currHeadY);
+                    this.createFood(this.headSize);
+            }else {
+                if((this.getSnakeBody().length > 0)) {
+                    let lastBodyPart = this.board.removeChild(this.snakeBody[this.snakeBody.length-1]);
+                
+                    lastBodyPart.style.left = parseInt(currHeadX) + "px";
+                    lastBodyPart.style.top  = parseInt(currHeadY) + "px";
+    
+                    this.head.after(lastBodyPart);
+                }
             }
-        if(    (parseInt(this.headX) > 390) 
-            || (parseInt(this.headX) < 0) 
-            || (parseInt(this.headY) > 390) 
-            || (parseInt(this.headY) < 0)
-            ) {
-            this.newGame();
+            this.getSnakeBody();
+
+            if(    (parseInt(this.headX) > 390) 
+                || (parseInt(this.headX) < 0) 
+                || (parseInt(this.headY) > 390) 
+                || (parseInt(this.headY) < 0)
+                ) {
+                this.newGame();
+            }
         }
     }
     getCurrentDirection() {
@@ -138,12 +159,22 @@ class Snake {
     getSpeed() {
         return this.speed;
     }
-    addBody(size) {
-        let bodySize = size;
+    getSnakeBody() {
+        return this.snakeBody = document.querySelectorAll('[data-snakebody]');
+    }
+    addBody(size, xPos, yPos) {
+        
+        this.body = document.createElement('div');
+        this.body.setAttribute('data-snakebody', '');
+        this.body.setAttribute('class', 'snake-body');
+        this.body.style.left        = parseInt(xPos) + "px";
+        this.body.style.top       = parseInt(yPos) + "px";
+        this.head.after(this.body);
 
     }
     createFood(size) {
         this.food = document.createElement('div');
+                
         let x = parseInt(Math.random()*400);
         let y = parseInt(Math.random()*400);
         x = x - x % this.headSize;
@@ -164,6 +195,7 @@ class Snake {
 }
 const head  = document.querySelector('#head');
 const board = document.querySelector('#board');
+const body  = document.querySelectorAll('[data-snakebody]');
 
 const directionArr  = [
     'ArrowRight', 
@@ -171,7 +203,6 @@ const directionArr  = [
     'ArrowUp', 
     'ArrowDown'
 ];
-
 const snake = new Snake(head, board);
 
 document.body.addEventListener('keydown', 
