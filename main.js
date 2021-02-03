@@ -3,7 +3,8 @@ class Snake {
         this.head             = head;
         this.board            = board;
         this.headSize         = this.head.offsetWidth;
-        this.speed            = 90;
+        this.speed            = 120;
+        this.scoreField       = document.querySelector('#score');
         this.prevDirection    = undefined;
         this.currentDirection = undefined;
         this.newGame();
@@ -11,11 +12,13 @@ class Snake {
     newGame() {
         this.head.style.left  = 0;
         this.head.style.top   = 0;
+        this.point            = 0;
         this.prevDirection    = undefined;
         this.currentDirection = undefined;
         this.headX            = window.getComputedStyle(this.head).left;
         this.headY            = window.getComputedStyle(this.head).top;
         this.getSnakeBody();
+        this.updatePoint(this.point);
         if(this.food) this.board.removeChild(this.food);
 
         if(this.getSnakeBody().length > 0) {
@@ -128,6 +131,8 @@ class Snake {
                 ) {
                     this.board.removeChild(this.food);
                     this.addBody(this.headSize, currHeadX, currHeadY);
+                    this.point++;
+                    this.updatePoint(this.point);
                     this.createFood(this.headSize);
             }else {
                 if((this.getSnakeBody().length > 0)) {
@@ -170,6 +175,10 @@ class Snake {
         this.body.style.left        = parseInt(xPos) + "px";
         this.body.style.top       = parseInt(yPos) + "px";
         this.head.after(this.body);
+
+    }
+    updatePoint(point) {
+        this.scoreField.textContent = "" + point;
 
     }
     createFood(size) {
