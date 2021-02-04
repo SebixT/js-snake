@@ -3,7 +3,6 @@ class Snake {
         this.head             = head;
         this.board            = board;
         this.headSize         = this.head.offsetWidth;
-        this.speed            = 120;
         this.scoreField       = document.querySelector('#score');
         this.prevDirection    = undefined;
         this.currentDirection = undefined;
@@ -13,6 +12,7 @@ class Snake {
         this.head.style.left  = 0;
         this.head.style.top   = 0;
         this.point            = 0;
+        this.speed            = 200;
         this.prevDirection    = undefined;
         this.currentDirection = undefined;
         this.headX            = window.getComputedStyle(this.head).left;
@@ -26,8 +26,10 @@ class Snake {
                 this.board.removeChild(bodyPart);
             });
         }
-
         this.createFood(this.headSize);
+
+        clearInterval(this.intervalVal);
+        this.changeInterval();
     }
 
     /* 
@@ -131,8 +133,13 @@ class Snake {
                 ) {
                     this.board.removeChild(this.food);
                     this.addBody(this.headSize, currHeadX, currHeadY);
+
                     this.point++;
                     this.updatePoint(this.point);
+
+                    clearInterval(this.intervalVal);
+                    this.increaseSpeed();
+
                     this.createFood(this.headSize);
             }else {
                 if((this.getSnakeBody().length > 0)) {
@@ -179,7 +186,15 @@ class Snake {
     }
     updatePoint(point) {
         this.scoreField.textContent = "" + point;
-
+    }
+    increaseSpeed() {
+        this.setSpeed(this.speed - 10);
+        this.changeInterval();
+    }
+    changeInterval() {
+        this.intervalVal = setInterval(() => { 
+            this.move();
+        }, this.getSpeed());
     }
     createFood(size) {
         this.food = document.createElement('div');
@@ -202,6 +217,7 @@ class Snake {
 
     }
 }
+
 const head  = document.querySelector('#head');
 const board = document.querySelector('#board');
 const body  = document.querySelectorAll('[data-snakebody]');
@@ -212,6 +228,7 @@ const directionArr  = [
     'ArrowUp', 
     'ArrowDown'
 ];
+
 const snake = new Snake(head, board);
 
 document.body.addEventListener('keydown', 
@@ -219,7 +236,3 @@ function(event) {
     const key = event.key; 
     if(directionArr.includes(key)) snake.setCurrentDirection(key);
 });
-
-setInterval(function() { 
-    snake.move(); 
-}, snake.getSpeed());
