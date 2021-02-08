@@ -136,9 +136,10 @@ class Snake {
 
                     this.point++;
                     this.updatePoint(this.point);
-
-                    clearInterval(this.intervalVal);
-                    this.increaseSpeed();
+                    if(this.getSpeed() > 110) {
+                        clearInterval(this.intervalVal);
+                        this.increaseSpeed();
+                    }
 
                     this.createFood(this.headSize);
             }else {
