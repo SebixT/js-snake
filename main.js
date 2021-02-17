@@ -6,13 +6,14 @@ class Snake {
         this.scoreField       = document.querySelector('#score');
         this.prevDirection    = undefined;
         this.currentDirection = undefined;
+        this.dirChange        = [];
         this.newGame();
     }
     newGame() {
         this.head.style.left  = 0;
         this.head.style.top   = 0;
         this.point            = 0;
-        this.speed            = 200;
+        this.speed            = 2000;
         this.prevDirection    = undefined;
         this.currentDirection = undefined;
         this.headX            = window.getComputedStyle(this.head).left;
@@ -51,7 +52,7 @@ class Snake {
             return;
         }
         if(this.getPrevDirection() != undefined) {
-            
+
             switch(dir) {
                 case 'ArrowRight':
                     if(   (this.getPrevDirection() == 'ArrowRight')
@@ -61,6 +62,7 @@ class Snake {
                     }else {
                         this.currentDirection = dir;
                         this.setPrevDirection(this.getCurrentDirection());
+                        this.countSnakeLen();
                         return '';
                     }
                     break;
@@ -72,6 +74,7 @@ class Snake {
                     }else {
                         this.currentDirection = dir;
                         this.setPrevDirection(this.getCurrentDirection());
+                        this.countSnakeLen();
                         return '';
                     }
                     break;
@@ -83,6 +86,7 @@ class Snake {
                     }else {
                         this.currentDirection = dir;
                         this.setPrevDirection(this.getCurrentDirection());
+                        this.countSnakeLen();
                         return '';
                     }
                     break;
@@ -94,6 +98,7 @@ class Snake {
                     }else {
                         this.currentDirection = dir;
                         this.setPrevDirection(this.getCurrentDirection());
+                        this.countSnakeLen();
                         return '';
                     }
                     break;
@@ -101,6 +106,40 @@ class Snake {
                     break;
             }
         }
+    }
+    countSnakeLen() {
+        let xDirLen  = 0;
+        let yDirLen  = 0;
+        let snakeLen = 0;
+
+        // if(this.dirChange.length <= 0) {
+        //     this.dirChange.push([parseInt(this.headX), parseInt(this.headY)]);
+        // }else {
+        //     if(!(  (this.dirChange[this.dirChange.length - 1][0] == parseInt(this.headX))
+        //          && (this.dirChange[this.dirChange.length - 1][1] == parseInt(this.headY))) 
+        //          ) {
+        //             this.dirChange.push([parseInt(this.headX), parseInt(this.headY)]);
+        //          }
+        // }
+        this.dirChange.push([parseInt(this.headX), parseInt(this.headY)]);
+        this.dirChange = this.dirChange.slice().reverse();
+
+console.log(this.dirChange);
+        // this.dirChange.some((coor, key) => {  
+        //     if(this.dirChange[key+1] != undefined) {
+        //         xDirLen = xDirLen + Math.abs((this.dirChange[key][0] - this.dirChange[key+1][0]));
+        //         yDirLen = yDirLen + Math.abs((this.dirChange[key][1] - this.dirChange[key+1][1]));
+        //         snakeLen = xDirLen + yDirLen;
+        //         snakeLen = snakeLen/20;
+                
+                
+        //         if(snakeLen >= (this.point+1)) {
+        //             console.log('seba');
+        //             this.dirChange.splice(key, this.dirChange.length);
+        //         }
+        //     }
+        // });
+        this.dirChange = this.dirChange.slice().reverse();
     }
     move() {
         
@@ -136,6 +175,7 @@ class Snake {
 
                     this.point++;
                     this.updatePoint(this.point);
+                    
                     if(this.getSpeed() > 110) {
                         clearInterval(this.intervalVal);
                         this.increaseSpeed();
