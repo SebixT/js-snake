@@ -13,7 +13,7 @@ class Snake {
         this.head.style.left  = 0;
         this.head.style.top   = 0;
         this.point            = 0;
-        this.speed            = 90;
+        this.speed            = 300;
         this.prevDirection    = undefined;
         this.currentDirection = undefined;
         this.headX            = window.getComputedStyle(this.head).left;
