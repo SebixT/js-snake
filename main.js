@@ -6,14 +6,14 @@ class Snake {
         this.scoreField       = document.querySelector('#score');
         this.prevDirection    = undefined;
         this.currentDirection = undefined;
-        this.dirChange        = [];
+        this.snakePosArr      = [];
         this.newGame();
     }
     newGame() {
         this.head.style.left  = 0;
         this.head.style.top   = 0;
         this.point            = 0;
-        this.speed            = 2000;
+        this.speed            = 90;
         this.prevDirection    = undefined;
         this.currentDirection = undefined;
         this.headX            = window.getComputedStyle(this.head).left;
@@ -62,7 +62,6 @@ class Snake {
                     }else {
                         this.currentDirection = dir;
                         this.setPrevDirection(this.getCurrentDirection());
-                        this.countSnakeLen();
                         return '';
                     }
                     break;
@@ -74,7 +73,6 @@ class Snake {
                     }else {
                         this.currentDirection = dir;
                         this.setPrevDirection(this.getCurrentDirection());
-                        this.countSnakeLen();
                         return '';
                     }
                     break;
@@ -86,7 +84,6 @@ class Snake {
                     }else {
                         this.currentDirection = dir;
                         this.setPrevDirection(this.getCurrentDirection());
-                        this.countSnakeLen();
                         return '';
                     }
                     break;
@@ -98,7 +95,6 @@ class Snake {
                     }else {
                         this.currentDirection = dir;
                         this.setPrevDirection(this.getCurrentDirection());
-                        this.countSnakeLen();
                         return '';
                     }
                     break;
@@ -107,45 +103,20 @@ class Snake {
             }
         }
     }
-    countSnakeLen() {
-        let xDirLen  = 0;
-        let yDirLen  = 0;
-        let snakeLen = 0;
-
-        // if(this.dirChange.length <= 0) {
-        //     this.dirChange.push([parseInt(this.headX), parseInt(this.headY)]);
-        // }else {
-        //     if(!(  (this.dirChange[this.dirChange.length - 1][0] == parseInt(this.headX))
-        //          && (this.dirChange[this.dirChange.length - 1][1] == parseInt(this.headY))) 
-        //          ) {
-        //             this.dirChange.push([parseInt(this.headX), parseInt(this.headY)]);
-        //          }
-        // }
-        this.dirChange.push([parseInt(this.headX), parseInt(this.headY)]);
-        this.dirChange = this.dirChange.slice().reverse();
-
-console.log(this.dirChange);
-        // this.dirChange.some((coor, key) => {  
-        //     if(this.dirChange[key+1] != undefined) {
-        //         xDirLen = xDirLen + Math.abs((this.dirChange[key][0] - this.dirChange[key+1][0]));
-        //         yDirLen = yDirLen + Math.abs((this.dirChange[key][1] - this.dirChange[key+1][1]));
-        //         snakeLen = xDirLen + yDirLen;
-        //         snakeLen = snakeLen/20;
-                
-                
-        //         if(snakeLen >= (this.point+1)) {
-        //             console.log('seba');
-        //             this.dirChange.splice(key, this.dirChange.length);
-        //         }
-        //     }
-        // });
-        this.dirChange = this.dirChange.slice().reverse();
+    updateSnakeBodyArr() {
+        this.snakePosArr = this.snakePosArr.slice().reverse(); //odwrócenie tablicy
+    }
+    isArrayInArray(arr, item){
+        var item_as_string = JSON.stringify(item);
+      
+        var contains = arr.some(function(ele){
+          return JSON.stringify(ele) === item_as_string;
+        });
+        return contains;
     }
     move() {
-        
         let currHeadX = this.headX;
         let currHeadY = this.headY;
-
         switch(this.getCurrentDirection()) {
             case 'ArrowRight':
                 this.headX = parseInt(this.headX) + this.headSize + 'px';
@@ -162,16 +133,22 @@ console.log(this.dirChange);
             default:
                 break;
         }
+        /* Check if head position == body part position */
+        if(this.isArrayInArray(this.snakePosArr, [parseInt(this.headX), parseInt(this.headY)])) this.newGame();
+        /* */
         this.head.style.left = this.headX;
         this.head.style.top  = this.headY;
-
+        
         if(!((currHeadX == this.headX)&&(currHeadY == this.headY))){
-            
+
             if(   (this.foodX == parseInt(this.headX))
                 &&(this.foodY == parseInt(this.headY))
                 ) {
                     this.board.removeChild(this.food);
                     this.addBody(this.headSize, currHeadX, currHeadY);
+                    /* Add head position to array */
+                    this.snakePosArr.push([parseInt(this.headX), parseInt(this.headY)]);
+                    /* */
 
                     this.point++;
                     this.updatePoint(this.point);
@@ -188,12 +165,29 @@ console.log(this.dirChange);
                 
                     lastBodyPart.style.left = parseInt(currHeadX) + "px";
                     lastBodyPart.style.top  = parseInt(currHeadY) + "px";
-    
+
                     this.head.after(lastBodyPart);
+                    /* Add head postion to array, remove last body element from array*/
+                    this.snakePosArr.pop();
+                    this.snakePosArr = this.snakePosArr.reverse();
+                    this.snakePosArr.push([parseInt(this.headX), parseInt(this.headY)]);
+                    this.snakePosArr = this.snakePosArr.reverse();
+                    /* */
+                }else {
+                    /* */
+                    let snakePosArrLen = this.snakePosArr.length;
+                    if(snakePosArrLen < 1) {
+                        this.snakePosArr.push([parseInt(this.headX), parseInt(this.headY)]);
+                    }else {
+                        this.snakePosArr.pop();
+                        this.snakePosArr = this.snakePosArr.reverse();
+                        this.snakePosArr.push([parseInt(this.headX), parseInt(this.headY)]);
+                        this.snakePosArr = this.snakePosArr.reverse();
+                    } 
+                    /* */
                 }
             }
             this.getSnakeBody();
-
             if(    (parseInt(this.headX) > 390) 
                 || (parseInt(this.headX) < 0) 
                 || (parseInt(this.headY) > 390) 
@@ -216,14 +210,14 @@ console.log(this.dirChange);
         return this.snakeBody = document.querySelectorAll('[data-snakebody]');
     }
     addBody(size, xPos, yPos) {
-        
         this.body = document.createElement('div');
+
         this.body.setAttribute('data-snakebody', '');
         this.body.setAttribute('class', 'snake-body');
-        this.body.style.left        = parseInt(xPos) + "px";
-        this.body.style.top       = parseInt(yPos) + "px";
-        this.head.after(this.body);
 
+        this.body.style.left = parseInt(xPos) + "px";
+        this.body.style.top  = parseInt(yPos) + "px";
+        this.head.after(this.body);
     }
     updatePoint(point) {
         this.scoreField.textContent = "" + point;
