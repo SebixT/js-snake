@@ -6,7 +6,6 @@ class Snake {
         this.scoreField       = document.querySelector('#score');
         this.prevDirection    = undefined;
         this.currentDirection = undefined;
-        this.snakePosArr      = [];
         this.newGame();
     }
     newGame() {
@@ -16,6 +15,7 @@ class Snake {
         this.speed            = 300;
         this.prevDirection    = undefined;
         this.currentDirection = undefined;
+        this.snakePosArr      = [];
         this.headX            = window.getComputedStyle(this.head).left;
         this.headY            = window.getComputedStyle(this.head).top;
         this.getSnakeBody();
