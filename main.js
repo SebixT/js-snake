@@ -6,7 +6,7 @@ class Snake {
         this.scoreField       = document.querySelector('#score');
         this.prevDirection    = undefined;
         this.currentDirection = undefined;
-        this.newGame();
+        this.newGame(); 
     }
     newGame() {
         this.head.style.left  = 0;
