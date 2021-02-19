@@ -12,7 +12,7 @@ class Snake {
         this.head.style.left  = 0;
         this.head.style.top   = 0;
         this.point            = 0;
-        this.speed            = 300;
+        this.speed            = 200;
         this.prevDirection    = undefined;
         this.currentDirection = undefined;
         this.snakePosArr      = [];
@@ -46,6 +46,7 @@ class Snake {
         return this.prevDirection;
     }
     setCurrentDirection(dir) {
+        this.cos = 1;
         if(this.getPrevDirection() == undefined) {
             this.setPrevDirection(dir);
             this.currentDirection = dir;
@@ -61,7 +62,6 @@ class Snake {
                             return '';
                     }else {
                         this.currentDirection = dir;
-                        this.setPrevDirection(this.getCurrentDirection());
                         return '';
                     }
                     break;
@@ -72,7 +72,6 @@ class Snake {
                             return '';
                     }else {
                         this.currentDirection = dir;
-                        this.setPrevDirection(this.getCurrentDirection());
                         return '';
                     }
                     break;
@@ -83,7 +82,6 @@ class Snake {
                             return '';
                     }else {
                         this.currentDirection = dir;
-                        this.setPrevDirection(this.getCurrentDirection());
                         return '';
                     }
                     break;
@@ -94,7 +92,6 @@ class Snake {
                             return '';
                     }else {
                         this.currentDirection = dir;
-                        this.setPrevDirection(this.getCurrentDirection());
                         return '';
                     }
                     break;
@@ -119,15 +116,19 @@ class Snake {
         let currHeadY = this.headY;
         switch(this.getCurrentDirection()) {
             case 'ArrowRight':
+                this.setPrevDirection(this.getCurrentDirection());
                 this.headX = parseInt(this.headX) + this.headSize + 'px';
                 break;
             case 'ArrowLeft':
+                this.setPrevDirection(this.getCurrentDirection());
                 this.headX = parseInt(this.headX) - this.headSize + 'px';
                 break;
             case 'ArrowUp':
+                this.setPrevDirection(this.getCurrentDirection());
                 this.headY = parseInt(this.headY) - this.headSize + 'px';
                 break;
             case 'ArrowDown':
+                this.setPrevDirection(this.getCurrentDirection());
                 this.headY = parseInt(this.headY) + this.headSize + 'px';
                 break;
             default:
