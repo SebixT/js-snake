@@ -101,7 +101,7 @@ class Snake {
         }
     }
     updateSnakeBodyArr() {
-        this.snakePosArr = this.snakePosArr.slice().reverse(); //odwrócenie tablicy
+        this.snakePosArr = this.snakePosArr.slice().reverse(); // reverse array
     }
     isArrayInArray(arr, item){
         var item_as_string = JSON.stringify(item);
@@ -234,18 +234,27 @@ class Snake {
     }
     createFood(size) {
         this.food = document.createElement('div');
-                
-        let x = parseInt(Math.random()*400);
-        let y = parseInt(Math.random()*400);
-        x = x - x % this.headSize;
-        y = y - y % this.headSize;
-        this.food.style.position   = "absolute";
-        this.food.style.top        = y + "px";
-        this.food.style.left       = x + "px";
-        this.food.style.width      = size + "px";
-        this.food.style.height     = size + "px";
-        this.food.style.background = "pink";
+
+        let x = '';
+        let y = '';
+        do{
+            x = parseInt(Math.random()*400);
+            y = parseInt(Math.random()*400);
+            x = x - x % this.headSize;
+            y = y - y % this.headSize;
+
+        }while(this.isArrayInArray(this.snakePosArr, [x, y]))
+
+        this.food.style.position     = "absolute";
+        this.food.style.top          = y + "px";
+        this.food.style.left         = x + "px";
+        this.food.style.width        = size + "px";
+        this.food.style.height       = size + "px";
+        this.food.style.borderRadius = "50%";
+        this.food.style.background   = "pink";
+        
         this.foodX = x;
+        
         this.foodY = y;
         this.board.appendChild(this.food);
     }
