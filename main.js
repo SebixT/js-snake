@@ -135,7 +135,14 @@ class Snake {
                 break;
         }
         /* Check if head position == body part position */
-        if(this.isArrayInArray(this.snakePosArr, [parseInt(this.headX), parseInt(this.headY)])) this.newGame();
+        if(
+            this.isArrayInArray(
+                this.snakePosArr, 
+                [
+                    parseInt(this.headX), 
+                    parseInt(this.headY)
+                ]
+            )) this.newGame();
         /* */
         this.head.style.left = this.headX;
         this.head.style.top  = this.headY;
@@ -148,7 +155,11 @@ class Snake {
                     this.board.removeChild(this.food);
                     this.addBody(this.headSize, currHeadX, currHeadY);
                     /* Add head position to array */
-                    this.snakePosArr.push([parseInt(this.headX), parseInt(this.headY)]);
+                    this.snakePosArr.push(
+                            [
+                                parseInt(this.headX), parseInt(this.headY)
+                            ]
+                        );
                     /* */
 
                     this.point++;
